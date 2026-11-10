@@ -2,8 +2,8 @@
 """Read Xbox disc images (XDVDFS) directly - trimmed .xiso files and full-size dumps.
 
 Run it to see what's in an image:
-    python xiso.py "Panzer Dragoon Orta (USA).xiso.iso"          # summary
-    python xiso.py "Panzer Dragoon Orta (USA).xiso.iso" --list   # plus every file
+    xiso "Panzer Dragoon Orta (USA).xiso.iso"          # summary
+    xiso "Panzer Dragoon Orta (USA).xiso.iso" --list   # plus every file
 
 Or use it from other scripts:
     img = XisoImage("Panzer Dragoon Orta (USA).xiso.iso")

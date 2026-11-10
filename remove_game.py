@@ -7,9 +7,9 @@
 - Game saves live in E:\\UDATA, not in the game folder, so they are kept.
 
 Usage (from PowerShell, in the xbox folder):
-    python remove_game.py                       # pick from E:\\Games
-    python remove_game.py --dry-run             # pick and show what would go; no login
-    python remove_game.py --folder E/Applications --ip 192.168.137.2
+    remove-game                       # pick from E:\\Games
+    remove-game --dry-run             # pick and show what would go; no login
+    remove-game --folder E/Applications --ip 192.168.137.2
 
 Keys: Up/Down (or W/S) to move, Enter to choose, Esc or Q to quit.
 Only UnleashX runs an FTP server - games, XBMC and the MS dashboard don't.
@@ -27,7 +27,6 @@ from pathlib import Path
 
 from push_stage import DEFAULT_IP, NET_ERRORS, Display, connect
 
-HERE = Path(__file__).resolve().parent
 
 
 def human(n: int) -> str:
@@ -82,9 +81,9 @@ def free_space(ftp: ftplib.FTP, drive: str) -> str | None:
 
 
 def pc_copies(folder: str, name: str) -> list[str]:
-    """Staging folders next to this script that contain <folder>/<name>."""
+    """Staging folders in the current folder that contain <folder>/<name>."""
     hits = []
-    for stage in sorted(HERE.glob("*-stage")):
+    for stage in sorted(Path.cwd().glob("*-stage")):
         p = stage.joinpath(*folder.split("/"), name)
         if p.is_dir():
             hits.append(stage.name)
@@ -235,7 +234,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"{ui.bold}{name}{ui.reset}: {human(tree.size)}, {len(tree.files)} files, {len(tree.dirs)} folders.")
     print(f"{ui.dim}Saves are in E:\\UDATA and won't be touched.{ui.reset}")
     if copies:
-        print(f"You can put it back later:  python push_stage.py {copies[0]}")
+        print(f"You can put it back later:  push-stage {copies[0]}")
     else:
         print(f"{ui.red}There's no copy of this on the PC - you'd need the disc or a backup to put it back.{ui.reset}")
     if args.dry_run:

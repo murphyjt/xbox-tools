@@ -1,15 +1,18 @@
-"""Turn an Xbox disc image (.iso / .xiso) into a staging folder ready for push_stage.py.
+"""Turn an Xbox disc image (.iso / .xiso) into a staging folder ready for push-stage.
 
-    python stage_game.py "C:\\Users\\Joshua\\Downloads\\My Game (USA).iso"
+    stage-game "C:\\Users\\Joshua\\Downloads\\My Game (USA).iso"
 
 What it does:
   1. Checks the file really is an Xbox disc image (trimmed xiso or full-size).
   2. Lists it and checks every name fits the Xbox's file system (42 characters max).
-  3. Extracts it with tools/extract-xiso (skipping the $SystemUpdate folder), with progress.
+  3. Extracts it with extract-xiso (skipping the $SystemUpdate folder), with progress.
   4. Checks the extracted files match the image and that default.xbe is there.
   5. Names the game folder after the game's own title (from default.xbe) and creates
-     <game>-stage\\E\\Games\\<Title>\\ next to this script.
+     <game>-stage\\E\\Games\\<Title>\\ in the current folder.
   6. If the Xbox is reachable, compares the size with its free space.
+
+extract-xiso is looked for on the PATH, then in tools\\extract-xiso\\artifacts\\ in the
+current folder or next to this script.
 
 Options:
   --name "Folder Name"   use this folder name on the Xbox instead of the game's title
@@ -34,14 +37,30 @@ from push_stage import DEFAULT_IP, NET_ERRORS, Display, connect, mb
 from xiso import FATX_MAX, fatx_name, region_names
 
 HERE = Path(__file__).resolve().parent
-EXTRACT_XISO = HERE / "tools" / "extract-xiso" / "artifacts" / "extract-xiso.exe"
 CONSOLE_REGION = 0x1  # this console is NTSC North America (XBE region 01)
+EXTRACT_XISO_URL = "https://github.com/XboxDev/extract-xiso/releases"
+
+
+def find_extract_xiso() -> Path | None:
+    """extract-xiso on the PATH, else in tools/extract-xiso/artifacts/ (current folder, then here)."""
+    on_path = shutil.which("extract-xiso")
+    if on_path:
+        return Path(on_path)
+    exe = "extract-xiso.exe" if sys.platform == "win32" else "extract-xiso"
+    for base in (Path.cwd(), HERE):
+        p = base / "tools" / "extract-xiso" / "artifacts" / exe
+        if p.is_file():
+            return p
+    return None
+
+
+EXTRACT_XISO = find_extract_xiso()
 
 
 def shown(p: Path) -> str:
-    """Path relative to the xbox folder when it's inside it, otherwise the full path."""
+    """Path relative to the current folder when it's inside it, otherwise the full path."""
     try:
-        return str(p.relative_to(HERE))
+        return str(p.resolve().relative_to(Path.cwd().resolve()))
     except ValueError:
         return str(p)
 
@@ -156,8 +175,10 @@ def main(argv: list[str] | None = None) -> int:
     if not image.is_file():
         print(f"File not found: {image}")
         return 1
-    if not EXTRACT_XISO.is_file():
-        print(f"extract-xiso not found at {EXTRACT_XISO}")
+    if EXTRACT_XISO is None:
+        print("extract-xiso wasn't found. Download it from " + EXTRACT_XISO_URL + " and either put it")
+        print("on your PATH or unzip it to tools\\extract-xiso\\artifacts\\ in this folder.")
+        print("(Or skip staging: push-stage can upload straight from the image.)")
         return 1
 
     # 1) Is it an Xbox disc image?
@@ -184,13 +205,13 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{ui.red}There's no default.xbe at the top of the image, so the Xbox couldn't launch it.{ui.reset}")
         return 1
     print(f"Contains {len(files)} files, {human(total)} (not counting $SystemUpdate).")
-    free_pc = shutil.disk_usage(HERE).free
+    free_pc = shutil.disk_usage(Path.cwd()).free
     if free_pc < total * 1.05:
         print(f"{ui.red}Not enough space on this PC: need {human(total)}, have {human(free_pc)}.{ui.reset}")
         return 1
 
-    # 3) Extract into a temporary folder next to this script.
-    tmp = HERE / f".staging-tmp-{slug(image.stem)}"
+    # 3) Extract into a temporary folder in the current folder.
+    tmp = Path.cwd() / f".staging-tmp-{slug(image.stem)}"
     if tmp.exists():
         shutil.rmtree(tmp)  # left over from an interrupted run of this script
     try:
@@ -206,7 +227,7 @@ def main(argv: list[str] | None = None) -> int:
 
         # 5) Name it and move it into its staging folder.
         name = fatx_name(args.name or title or image.stem)
-        stage = HERE / (args.stage or f"{slug(name)}-stage")
+        stage = Path.cwd() / (args.stage or f"{slug(name)}-stage")
         target = stage / "E" / "Games" / name
         if target.exists():
             print(f"{ui.red}{shown(target)} already exists{ui.reset} - not overwriting it. "
@@ -235,19 +256,19 @@ def main(argv: list[str] | None = None) -> int:
         else:
             if exists:
                 print(f"  {ui.red}Note: a folder named E:\\Games\\{name} is already on the Xbox.{ui.reset}")
-                print("  If it's this same game, push_stage.py will just fill in anything missing.")
+                print("  If it's this same game, push-stage will just fill in anything missing.")
                 print(f"  If it's a different game, restage with a different name (--name) so they don't mix.")
             elif free >= need:
                 print(f"  {ui.green}Fits:{ui.reset} needs about {human(need)}, the Xbox has {human(free)} free.")
             else:
                 print(f"  {ui.red}Won't fit yet:{ui.reset} needs about {human(need)}, the Xbox has {human(free)} free. "
-                      f"Free up {human(need - free)} first (python remove_game.py).")
+                      f"Free up {human(need - free)} first (remove-game).")
     print()
     s = shown(stage)
     s = f'"{s}"' if " " in s else s
     print("Next:")
-    print(f"  python push_stage.py {s} --dry-run")
-    print(f"  python push_stage.py {s}")
+    print(f"  push-stage {s} --dry-run")
+    print(f"  push-stage {s}")
     return 0
 
 

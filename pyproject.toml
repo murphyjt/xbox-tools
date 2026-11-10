@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xbox-tools"
+version = "0.1.0"
+description = "Scripts for managing games on a softmodded original Xbox over FTP (UnleashX)"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Joshua Murphy" }]
+requires-python = ">=3.10"
+
+[project.urls]
+Homepage = "https://github.com/murphyjt/xbox-tools"
+
+[project.scripts]
+push-stage = "push_stage:main"
+remove-game = "remove_game:main"
+stage-game = "stage_game:main"
+xiso = "xiso:main"
+
+[tool.setuptools]
+py-modules = ["push_stage", "remove_game", "stage_game", "xiso"]

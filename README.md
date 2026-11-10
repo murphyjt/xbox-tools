@@ -1,37 +1,52 @@
 # xbox-tools
 
-Scripts for managing games on a softmodded original Xbox over FTP, using the
-FTP server built into the UnleashX dashboard.
+Command-line tools for managing games on a softmodded original Xbox over FTP,
+using the FTP server built into the UnleashX dashboard.
 
 ## Requirements
 
-- Python 3 (tested with 3.12 and 3.14). No extra packages.
+- Python 3.10 or newer (tested with 3.12 and 3.14). No extra packages.
 - An Xbox running UnleashX with FTP enabled, including anonymous login
   (used for read-only checks; uploads and deletes ask for your FTP login).
-- For `stage_game.py` only: [extract-xiso](https://github.com/XboxDev/extract-xiso/releases),
-  unzipped to `tools/extract-xiso/artifacts/`.
+- For `stage-game` only: [extract-xiso](https://github.com/XboxDev/extract-xiso/releases),
+  on your PATH or unzipped to `tools/extract-xiso/artifacts/`.
 
-The scripts default to the Xbox at `192.168.137.2`. Use `--ip` to change it.
+The tools default to the Xbox at `192.168.137.2`. Use `--ip` to change it.
 
-## Scripts
+## Install
 
-| Script | Does |
+```
+pip install git+https://github.com/murphyjt/xbox-tools
+```
+
+Or from a clone, so your edits take effect right away:
+
+```
+pip install -e .
+```
+
+## Commands
+
+| Command | Does |
 | --- | --- |
-| `push_stage.py` | Uploads a game from a disc image (`.iso` / `.xiso`) or a staging folder. Skips files already on the Xbox, checks free space before starting, and resumes if interrupted. |
-| `remove_game.py` | Lists the games on the Xbox and deletes the one you pick. |
-| `stage_game.py` | Extracts a disc image into a staging folder. |
-| `xiso.py` | Shows what's in a disc image: title, region, size, files. |
-| `push-480i-config.sh` | Turns UnleashX's 480p setting off or back on (needs Bash, e.g. Git Bash). |
+| `push-stage` | Uploads a game from a disc image (`.iso` / `.xiso`) or a staging folder. Skips files already on the Xbox, checks free space before starting, and resumes if interrupted. |
+| `remove-game` | Lists the games on the Xbox and deletes the one you pick. |
+| `stage-game` | Extracts a disc image into a staging folder in the current folder. |
+| `xiso` | Shows what's in a disc image: title, region, size, files. |
 
-Run any script with `-h` for its options.
+Run any command with `-h` for its options. Without installing, run the scripts
+directly instead, e.g. `python push_stage.py`.
+
+`push-480i-config.sh` turns UnleashX's 480p setting off or back on. It's a Bash
+script (use Git Bash on Windows) and isn't installed as a command.
 
 ## Examples
 
 ```
-python xiso.py "Game (USA).iso"
-python push_stage.py "Game (USA).iso" --dry-run
-python push_stage.py "Game (USA).iso"
-python remove_game.py
+xiso "Game (USA).iso"
+push-stage "Game (USA).iso" --dry-run
+push-stage "Game (USA).iso"
+remove-game
 ```
 
 Games go to `E:\Games\<title>` by default. A staging folder mirrors the Xbox's

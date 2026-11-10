@@ -11,12 +11,12 @@
   progress line that updates during each file, and automatic reconnect-and-retry.
 
 Usage (from PowerShell or any terminal, in the xbox folder):
-    python push_stage.py <stage-folder>              # upload
-    python push_stage.py "C:\\...\\My Game.iso"        # upload a game straight from its image
-    python push_stage.py "C:\\...\\My Game.iso" --name "My Game"   # choose the folder name
-    python push_stage.py <stage-folder or image> --dry-run         # check only, no login needed
-    python push_stage.py <stage-folder> --ip 192.168.137.2 --verify
-    python push_stage.py xbmc-stage --exclude "*FileZilla Server.xml"   # skip files the app rewrites
+    push-stage <stage-folder>              # upload
+    push-stage "C:\\...\\My Game.iso"        # upload a game straight from its image
+    push-stage "C:\\...\\My Game.iso" --name "My Game"   # choose the folder name
+    push-stage <stage-folder or image> --dry-run         # check only, no login needed
+    push-stage <stage-folder> --ip 192.168.137.2 --verify
+    push-stage xbmc-stage --exclude "*FileZilla Server.xml"   # skip files the app rewrites
 
 Only UnleashX runs an FTP server - games, XBMC and the MS dashboard don't.
 """
@@ -261,7 +261,7 @@ def check_space(state: XboxState, ui: Display) -> bool:
         if need > free - SPACE_MARGIN:
             short = need - (free - SPACE_MARGIN)
             ui.line(f"{ui.red}Won't fit on {drive}:{ui.reset} needs about {human(need)}, the Xbox has {human(free)} free.")
-            print(f"Free up about {human(short)} first (python remove_game.py), then run this again.")
+            print(f"Free up about {human(short)} first (remove-game), then run this again.")
             ok = False
         else:
             ui.line(f"{ui.green}Fits on {drive}:{ui.reset} needs about {human(need)} of {human(free)} free.")
@@ -468,7 +468,7 @@ def main(argv: list[str] | None = None) -> int:
     if root and f"{root}/default.xbe" in state.replaced:
         shown = root.split("/")[0] + ":\\" + "\\".join(root.split("/")[1:])
         ui.line(f"{ui.red}{shown} on the Xbox already holds a different game{ui.reset} (its default.xbe doesn't match).")
-        print('Use --name "Another Name" to upload this one alongside it, or remove that one first (python remove_game.py).')
+        print('Use --name "Another Name" to upload this one alongside it, or remove that one first (remove-game).')
         print("Nothing was uploaded.")
         return 1
 

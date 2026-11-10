@@ -17,7 +17,7 @@ FILES = {"default.xbe": make_xbe("Stage Test: Game", 0x54450003, 0x1),
          "$SystemUpdate/xboxupd.xbe": b"updater"}
 
 
-@unittest.skipUnless(stage_game.EXTRACT_XISO.is_file(), "tools/extract-xiso not installed")
+@unittest.skipUnless(stage_game.EXTRACT_XISO is not None, "extract-xiso not installed")
 class StageGame(unittest.TestCase):
     def setUp(self):
         self.dir = Path(tempfile.mkdtemp())
