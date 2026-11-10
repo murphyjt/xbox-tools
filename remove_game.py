@@ -7,9 +7,9 @@
 - Game saves live in E:\\UDATA, not in the game folder, so they are kept.
 
 Usage (from PowerShell, in the xbox folder):
-    remove-game                       # pick from E:\\Games
-    remove-game --dry-run             # pick and show what would go; no login
-    remove-game --folder E/Applications --ip 192.168.137.2
+    xbox-remove                       # pick from E:\\Games
+    xbox-remove --dry-run             # pick and show what would go; no login
+    xbox-remove --folder E/Applications --ip 192.168.137.2
 
 Keys: Up/Down (or W/S) to move, Enter to choose, Esc or Q to quit.
 Only UnleashX runs an FTP server - games, XBMC and the MS dashboard don't.
@@ -234,7 +234,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"{ui.bold}{name}{ui.reset}: {human(tree.size)}, {len(tree.files)} files, {len(tree.dirs)} folders.")
     print(f"{ui.dim}Saves are in E:\\UDATA and won't be touched.{ui.reset}")
     if copies:
-        print(f"You can put it back later:  push-stage {copies[0]}")
+        print(f"You can put it back later:  xbox-push {copies[0]}")
     else:
         print(f"{ui.red}There's no copy of this on the PC - you'd need the disc or a backup to put it back.{ui.reset}")
     if args.dry_run:

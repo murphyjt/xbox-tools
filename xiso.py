@@ -2,8 +2,8 @@
 """Read Xbox disc images (XDVDFS) directly - trimmed .xiso files and full-size dumps.
 
 Run it to see what's in an image:
-    xiso "Panzer Dragoon Orta (USA).xiso.iso"          # summary
-    xiso "Panzer Dragoon Orta (USA).xiso.iso" --list   # plus every file
+    xbox-info "Panzer Dragoon Orta (USA).xiso.iso"          # summary
+    xbox-info "Panzer Dragoon Orta (USA).xiso.iso" --list   # plus every file
 
 Or use it from other scripts:
     img = XisoImage("Panzer Dragoon Orta (USA).xiso.iso")
@@ -244,7 +244,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  Title ID      {tid:08X}  (publisher code {d['publisher']}, game #{d['game_number']})")
             print(f"  Region        {region_names(region)}")
             print(f"  Disc / ver.   disc {d['disc'] + 1}, version {d['version']}")
-            print(f"  Folder name   {fatx_name(title)}  (what stage_game.py / push_stage.py would use)")
+            print(f"  Folder name   {fatx_name(title)}  (what xbox-stage / xbox-push would use)")
         except ValueError as e:
             print(f"  default.xbe   {e}")
     else:

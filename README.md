@@ -8,7 +8,7 @@ using the FTP server built into the UnleashX dashboard.
 - Python 3.10 or newer (tested with 3.12 and 3.14). No extra packages.
 - An Xbox running UnleashX with FTP enabled, including anonymous login
   (used for read-only checks; uploads and deletes ask for your FTP login).
-- For `stage-game` only: [extract-xiso](https://github.com/XboxDev/extract-xiso/releases),
+- For `xbox-stage` only: [extract-xiso](https://github.com/XboxDev/extract-xiso/releases),
   on your PATH or unzipped to `tools/extract-xiso/artifacts/`.
 
 The tools default to the Xbox at `192.168.137.2`. Use `--ip` to change it.
@@ -29,10 +29,10 @@ pip install -e .
 
 | Command | Does |
 | --- | --- |
-| `push-stage` | Uploads a game from a disc image (`.iso` / `.xiso`) or a staging folder. Skips files already on the Xbox, checks free space before starting, and resumes if interrupted. |
-| `remove-game` | Lists the games on the Xbox and deletes the one you pick. |
-| `stage-game` | Extracts a disc image into a staging folder in the current folder. |
-| `xiso` | Shows what's in a disc image: title, region, size, files. |
+| `xbox-push` | Uploads a game from a disc image (`.iso` / `.xiso`) or a staging folder. Skips files already on the Xbox, checks free space before starting, and resumes if interrupted. |
+| `xbox-remove` | Lists the games on the Xbox and deletes the one you pick. |
+| `xbox-stage` | Extracts a disc image into a staging folder in the current folder. |
+| `xbox-info` | Shows what's in a disc image: title, region, size, files. |
 
 Run any command with `-h` for its options. Without installing, run the scripts
 directly instead, e.g. `python push_stage.py`.
@@ -43,10 +43,10 @@ script (use Git Bash on Windows) and isn't installed as a command.
 ## Examples
 
 ```
-xiso "Game (USA).iso"
-push-stage "Game (USA).iso" --dry-run
-push-stage "Game (USA).iso"
-remove-game
+xbox-info "Game (USA).iso"
+xbox-push "Game (USA).iso" --dry-run
+xbox-push "Game (USA).iso"
+xbox-remove
 ```
 
 Games go to `E:\Games\<title>` by default. A staging folder mirrors the Xbox's

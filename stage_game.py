@@ -1,6 +1,6 @@
-"""Turn an Xbox disc image (.iso / .xiso) into a staging folder ready for push-stage.
+"""Turn an Xbox disc image (.iso / .xiso) into a staging folder ready for xbox-push.
 
-    stage-game "C:\\Users\\Joshua\\Downloads\\My Game (USA).iso"
+    xbox-stage "C:\\Users\\Joshua\\Downloads\\My Game (USA).iso"
 
 What it does:
   1. Checks the file really is an Xbox disc image (trimmed xiso or full-size).
@@ -178,7 +178,7 @@ def main(argv: list[str] | None = None) -> int:
     if EXTRACT_XISO is None:
         print("extract-xiso wasn't found. Download it from " + EXTRACT_XISO_URL + " and either put it")
         print("on your PATH or unzip it to tools\\extract-xiso\\artifacts\\ in this folder.")
-        print("(Or skip staging: push-stage can upload straight from the image.)")
+        print("(Or skip staging: xbox-push can upload straight from the image.)")
         return 1
 
     # 1) Is it an Xbox disc image?
@@ -256,19 +256,19 @@ def main(argv: list[str] | None = None) -> int:
         else:
             if exists:
                 print(f"  {ui.red}Note: a folder named E:\\Games\\{name} is already on the Xbox.{ui.reset}")
-                print("  If it's this same game, push-stage will just fill in anything missing.")
+                print("  If it's this same game, xbox-push will just fill in anything missing.")
                 print(f"  If it's a different game, restage with a different name (--name) so they don't mix.")
             elif free >= need:
                 print(f"  {ui.green}Fits:{ui.reset} needs about {human(need)}, the Xbox has {human(free)} free.")
             else:
                 print(f"  {ui.red}Won't fit yet:{ui.reset} needs about {human(need)}, the Xbox has {human(free)} free. "
-                      f"Free up {human(need - free)} first (remove-game).")
+                      f"Free up {human(need - free)} first (xbox-remove).")
     print()
     s = shown(stage)
     s = f'"{s}"' if " " in s else s
     print("Next:")
-    print(f"  push-stage {s} --dry-run")
-    print(f"  push-stage {s}")
+    print(f"  xbox-push {s} --dry-run")
+    print(f"  xbox-push {s}")
     return 0
 
 
