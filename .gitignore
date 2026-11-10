@@ -1,0 +1,25 @@
+# Game and app files: staging folders and downloads (large, and copyrighted software)
+*-stage/
+*-download/
+.staging-tmp-*/
+*.iso
+*.xiso
+
+# Personal data: game saves, and EEPROM backups (HDD key, serial number, Xbox Live key)
+saves-backup-*/
+snapshot/
+
+# Downloaded tools - get extract-xiso from https://github.com/XboxDev/extract-xiso/releases
+# and unzip it to tools/extract-xiso/artifacts/
+tools/
+
+# Separate git repository (draft pull request for Rocky5's Xbox-Softmodding-Tool)
+Xbox-Softmodding-Tool/
+PR_DESCRIPTION.md
+
+# Python
+__pycache__/
+*.pyc
+
+# Leftovers
+zip_listing.txt

@@ -1,0 +1,2 @@
+# Bash scripts break with Windows (CRLF) line endings - always keep them as LF.
+*.sh text eol=lf
